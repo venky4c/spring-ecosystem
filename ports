@@ -1,0 +1,125 @@
+1. Limits Microservice
+Ports: 8080, 8081, etc.
+
+2. Spring Cloud Config Server
+Port: 8888
+
+3. Currency Exchange Microservice
+Ports: 8000, 8001, 8002, etc.
+
+4. Currency Conversion Microservice
+Ports: 8100, 8101, 8102, etc.
+
+5. Netflix Eureka Naming Server
+Port: 8761
+
+6. API Gateway
+Port: 8765
+
+7. Zipkin Distributed Tracing Server
+Port: 9411
+
+URL
+http://localhost:8000/currency-exchange/from/USD/to/INR
+
+
+
+Response Structure
+{
+   "id":10001,
+   "from":"USD",
+   "to":"INR",
+   "conversionMultiple":65.00,
+   "environment":"8000 instance-id"
+}
+URL
+http://localhost:8100/currency-conversion/from/USD/to/INR/quantity/10
+
+
+
+Response Structure
+{
+  "id": 10001,
+  "from": "USD",
+  "to": "INR",
+  "conversionMultiple": 65.00,
+  "quantity": 10,
+  "totalCalculatedAmount": 650.00,
+  "environment": "8000 instance-id"
+}
+
+Top Recommendation From Debugging Guide:
+
+Give these settings a try individually in application.properties of all microservices (currency-exchange, currency-conversion) to see if they help
+
+eureka.instance.prefer-ip-address=true
+OR
+
+eureka.instance.hostname=localhost
+*************************** 108 ******************
+Some of these URLs may be complex to write by hand:
+
+Refer back to here if you have problems in the next steps.
+
+
+
+Initial
+
+- http://localhost:8765/CURRENCY-EXCHANGE/currency-exchange/from/USD/to/INR
+
+- http://localhost:8765/CURRENCY-CONVERSION/currency-conversion/from/USD/to/INR/quantity/10
+
+- http://localhost:8765/CURRENCY-CONVERSION/currency-conversion-feign/from/USD/to/INR/quantity/10
+
+
+
+Lower Case
+
+- http://localhost:8765/currency-exchange/currency-exchange/from/USD/to/INR
+
+- http://localhost:8765/currency-conversion/currency-conversion/from/USD/to/INR/quantity/10
+
+- http://localhost:8765/currency-conversion/currency-conversion-feign/from/USD/to/INR/quantity/10
+
+
+
+Custom Routesdigi
+
+- http://localhost:8765/currency-exchange/from/USD/to/INR
+
+- http://localhost:8765/currency-conversion/from/USD/to/INR/quantity/10
+
+- http://localhost:8765/currency-conversion-feign/from/USD/to/INR/quantity/10
+
+- http://localhost:8765/currency-conversion-new/from/USD/to/INR/quantity/10
+
+DO NOT SKIP: Update to Step 28 and Step 29 - Change in Configuration
+Use maxAttempts instead of maxRetryAttempts
+
+resilience4j.retry.instances.sample-api.maxAttempts=5 #NEW
+#resilience4j.retry.instances.sample-api.maxRetryAttempts=5 #OLD
+
+***************** Docker and Kubernetes **************
+Bookmark the GitHub folders for this section
+https://github.com/in28minutes/spring-microservices-v3/tree/main/91.docker (HELLO WORLD PROJECT FOR LEARNING DOCKER)
+
+************** Step 121 ******************
+Recommendation 1
+
+If you are using Windows, make sure that you use PowerShell instead of Command Prompt.
+
+
+
+Recommendation 2
+
+If you are using Window 10 and are using docker toolbox
+
+=> Use 192.168.99.100 instead of localhost.
+
+Note: If 192.168.99.100 does not work, you can find the IP by using the command docker-machine ip
+
+
+
+Reason
+
+In Window 10 when using docker toolbox, docker is configured to use the default machine with IP 192.168.99.100
